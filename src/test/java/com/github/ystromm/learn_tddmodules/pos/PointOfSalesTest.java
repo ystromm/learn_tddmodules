@@ -13,6 +13,7 @@ public class PointOfSalesTest {
     public static final Barcode UMBRELLA_BARCODE = Barcode.of("1234567890");
     public static final Barcode RAIN_HAT_BARCODE = Barcode.of("2222222222");
     public static final Barcode EMPTY_BARCODE = Barcode.of("");
+    public static final Barcode UNKOWN_BARCODE = Barcode.of("FOO");
     public static final Price RAIN_HAT_PRICE = Price.of(73);
     public static final Price UMBRELLA_PRICE = Price.of(37);
 
@@ -27,8 +28,13 @@ public class PointOfSalesTest {
     }
 
     @Test
-    public void entering_empty_barcode_should_absent_price() {
+    public void entering_empty_barcode_should_return_absent_price() {
         assertThat(getPrice(EMPTY_BARCODE), equalTo(Optional.empty()));
+    }
+
+    @Test
+    public void entering_unknown_barcode_should_return_absent_price() {
+        assertThat(getPrice(UNKOWN_BARCODE), equalTo(Optional.empty()));
     }
 
 
