@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todos</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Demo</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <base href="/"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="css/style.css"/>-->
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/angularjs/angular.js"></script>
+    <script type="text/javascript" src="/webjars/angularjs/angular-resource.js"></script>
+    <!--
+        <script type="text/javascript" src="js/todos.js"></script>
+    -->
+</head>
+<body>
+<p>Point of sales</p>
+<div ng-app="pos">
+    <div ng-controller="posController">
+        <div>
+            <label>Barcode:</label>
+            <input data-test-id="barcode_input" ng-model="barcode.value" type="text">
+            <button data-test-id="barcode_button" ng-click="onBarcode()">OK</button>
+        </div>
+        <div>
+            {{display.text}}
+        </div>
+        <div>
+            {{error.error}}
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    angular
+        .module('pos', ['ngResource'])
+        .constant('POS_URL', 'http://localhost:8080')
+        .factory('posResource', function ($resource, POS_URL) {
+            return $resource(POS_URL + '/api/pos', {}, {
+                update: {method: 'PUT'}
+            });
+        }).controller("posController", function ($scope, posResource) {
+            $scope.barcode = {value: ""};
+            $scope.display = {text: ""};
+            $scope.error = {error: ""};
+            posResource.get().$promise.then(function(result) {
+                $scope.display = result;
+            });
+            $scope.onBarcode = function() {
+                posResource.update($scope.barcode).$promise.then(function(result) {
+                    $scope.display = result;
+                    $scope.error = {error: ""};
+                }, function(error) {
+                    $scope.error = error.data;
+                });
+            };
+        });
+</script>
+</body>
+</html>
