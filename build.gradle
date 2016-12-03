@@ -28,6 +28,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.jmock:jmock-junit4:2.8.2'
+    testCompile 'org.assertj:assertj-core:version:3.6.1'
+
 }
 
 task wrapper(type: Wrapper) {
