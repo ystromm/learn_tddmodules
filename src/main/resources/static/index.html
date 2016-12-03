@@ -20,19 +20,25 @@
     -->
 </head>
 <body>
-<p>Point of sales</p>
+<p>Sälj något!</p>
 <div ng-app="pos">
     <div ng-controller="posController">
         <div>
-            <label>Barcode:</label>
-            <input data-test-id="barcode_input" ng-model="barcode.value" type="text">
-            <button data-test-id="barcode_button" ng-click="onBarcode()">OK</button>
+            <label>Streckkod:</label>
+            <form ng-submit="onBarcode()">
+                <input data-test-id="barcode_input" ng-model="barcode.value" type="text">
+                <button data-test-id="barcode_button" ng-click="onBarcode()">OK</button>
+            </form>
         </div>
         <div>
             {{display.text}}
         </div>
-        <div>
-            {{error.error}}
+        <div ng-if="error.error">
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{error.error}}
+            </div>
         </div>
     </div>
 </div>
@@ -56,11 +62,15 @@
                 posResource.update($scope.barcode).$promise.then(function(result) {
                     $scope.display = result;
                     $scope.error = {error: ""};
+                    $scope.barcode = {value: ""};
                 }, function(error) {
+                    $scope.display = {text: ""};
                     $scope.error = error.data;
+                    $scope.barcode = {value: ""};
                 });
             };
         });
+
 </script>
 </body>
 </html>

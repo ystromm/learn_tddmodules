@@ -20,12 +20,14 @@ mainClassName = 'com.github.ystromm.learn_tddmodules.Main'
 dependencies {
     compile 'org.projectlombok:lombok:1.16.0'
     compile "com.google.guava:guava:19.0"
+    compile 'io.atlassian.fugue:fugue:4.3.0'
     compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.webjars:webjars-locator'
+    runtime 'org.webjars:webjars-locator'
     runtime 'org.webjars:angularjs:1.5.8'
     runtime 'org.webjars:bootstrap:3.3.7-1'
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+    testCompile 'org.jmock:jmock-junit4:2.8.2'
 }
 
 task wrapper(type: Wrapper) {
