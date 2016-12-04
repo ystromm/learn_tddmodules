@@ -111,6 +111,17 @@ public class PointOfSalesTest {
         assertThat(display.getText(), emptyString());
     }
 
+    @Test
+    public void scanOneProductAndSellAndOneProductAndSell() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.sell();
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.sell();
+        assertThat(display.getText(), equalTo("SEK " + UMBRELLA_PRICE.getPrice()));
+    }
+
     private static Catalog catalogWithRainClothes() {
         return Catalog.of(ImmutableMap.of(
                 RAIN_HAT_BARCODE, RAIN_HAT_PRICE,
