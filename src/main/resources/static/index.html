@@ -20,24 +20,33 @@
     -->
 </head>
 <body>
-<p>Sälj något!</p>
 <div ng-app="pos">
-    <div ng-controller="posController">
-        <div>
-            <label>Streckkod:</label>
+    <div ng-controller="posController" class="container">
+        <div class="row">
+            Sälj, sälj, sälj!
+        </div>
+        <div class="row">
             <form ng-submit="onBarcode()">
-                <input data-test-id="barcode_input" ng-model="barcode.value" type="text">
-                <button data-test-id="barcode_button" ng-click="onBarcode()">OK</button>
+                <label>Streckkod:</label>
+                <input data-test-id="barcode_input" ng-model="barcode.value" placeholder="Biipa något!" type="text">
+                <button data-test-id="barcode_button" ng-click="onBarcode()">Biip!</button>
             </form>
         </div>
-        <div>
-            {{display.text}}
+        <div class="row">
+            <div class="well">
+                {{display.text}}
+            </div>
+        </div>
+        <div class="row">
+            <button data-test-id="sell_button" ng-click="onSell()">Sälj!</button>
         </div>
         <div ng-if="error.error">
-            <div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                {{error.error}}
+            <div class="row">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    {{error.error}}
+                </div>
             </div>
         </div>
     </div>
@@ -47,19 +56,27 @@
     angular
         .module('pos', ['ngResource'])
         .constant('POS_URL', 'http://localhost:8080')
-        .factory('posResource', function ($resource, POS_URL) {
-            return $resource(POS_URL + '/api/pos', {}, {
-                update: {method: 'PUT'}
+        .factory('displayResource', function ($resource, POS_URL) {
+            return $resource(POS_URL + '/api/pos/display', {}, {
             });
-        }).controller("posController", function ($scope, posResource) {
+        })
+        .factory('barcodeResource', function ($resource, POS_URL) {
+            return $resource(POS_URL + '/api/pos/barcode', {}, {
+            });
+        })
+        .factory('sellResource', function ($resource, POS_URL) {
+            return $resource(POS_URL + '/api/pos/sell', {}, {
+            });
+        })
+        .controller("posController", function ($scope, displayResource, barcodeResource, sellResource) {
             $scope.barcode = {value: ""};
             $scope.display = {text: ""};
             $scope.error = {error: ""};
-            posResource.get().$promise.then(function(result) {
+            displayResource.get().$promise.then(function(result) {
                 $scope.display = result;
             });
             $scope.onBarcode = function() {
-                posResource.update($scope.barcode).$promise.then(function(result) {
+                barcodeResource.save($scope.barcode).$promise.then(function(result) {
                     $scope.display = result;
                     $scope.error = {error: ""};
                     $scope.barcode = {value: ""};
@@ -69,7 +86,23 @@
                     $scope.barcode = {value: ""};
                 });
             };
+            $scope.onSell = function() {
+                sellResource.save().$promise.then(function(result) {
+                    $scope.display = result;
+                    $scope.error = {error: ""};
+                    $scope.barcode = {value: ""};
+                }, function(error) {
+                    $scope.display = {text: ""};
+                    $scope.error = error.data;
+                    $scope.barcode = {value: ""};
+                });
+
+            };
         });
+
+
+
+
 
 </script>
 </body>

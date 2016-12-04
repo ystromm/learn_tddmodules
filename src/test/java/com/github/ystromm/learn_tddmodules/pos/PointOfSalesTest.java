@@ -2,11 +2,14 @@ package com.github.ystromm.learn_tddmodules.pos;
 
 
 import com.google.common.collect.ImmutableMap;
+import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PointOfSalesTest {
@@ -24,6 +27,16 @@ public class PointOfSalesTest {
         final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
         pointOfSales.onBarcode(RAIN_HAT_BARCODE);
         assertThat(display.getText(), equalTo("SEK " + RAIN_HAT_PRICE.getPrice()));
+    }
+
+    @Test
+    public void getText_should_return_price_for_rain_hat() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(RAIN_HAT_BARCODE);
+
+        Assertions.assertThat(display.getText()).isEqualTo("SEK " + RAIN_HAT_PRICE.getPrice());
+        Assertions.assertThat(display).extracting(Display::getText).contains("SEK " + RAIN_HAT_PRICE.getPrice());
     }
 
     @Test
@@ -48,6 +61,54 @@ public class PointOfSalesTest {
         final PointOfSales pointOfSales = new PointOfSales(display, emptyCatalog());
         pointOfSales.onBarcode(EMPTY_BARCODE);
         assertThat(display.getText(), equalTo("Konstig streckkod!"));
+    }
+
+    @Test
+    public void scanOneProductAndSell() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.sell();
+        assertThat(display.getText(), equalTo("SEK " + UMBRELLA_PRICE.getPrice()));
+    }
+
+    @Test
+    public void scanOneProductAndSellAndScanAnotherProduct() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.sell();
+        pointOfSales.onBarcode(RAIN_HAT_BARCODE);
+        assertThat(display.getText(), equalTo("SEK " + RAIN_HAT_PRICE.getPrice()));
+    }
+
+    @Test
+    public void scanTwoProducts() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.onBarcode(RAIN_HAT_BARCODE);
+        assertThat(display.getText(), equalTo("SEK " + RAIN_HAT_PRICE.getPrice()));
+    }
+
+    @Test
+    public void scanTwoProductsAndSell() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.onBarcode(RAIN_HAT_BARCODE);
+        pointOfSales.sell();
+        assertThat(display.getText(), equalTo("SEK " + (UMBRELLA_PRICE.getPrice()+RAIN_HAT_PRICE.getPrice())));
+    }
+
+    @Test
+    public void scanOneProductAndSellAndSell() {
+        final Display display = new Display();
+        final PointOfSales pointOfSales = new PointOfSales(display, catalogWithRainClothes());
+        pointOfSales.onBarcode(UMBRELLA_BARCODE);
+        pointOfSales.sell();
+        pointOfSales.sell();
+        assertThat(display.getText(), emptyString());
     }
 
     private static Catalog catalogWithRainClothes() {

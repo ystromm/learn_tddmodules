@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/pos")
+@RequestMapping("/api/pos/")
 public class PointOfSalesController {
     private final PointOfSales pointOfSales;
     private final Display display;
@@ -21,14 +21,21 @@ public class PointOfSalesController {
         this.display = display;
     }
 
-    @RequestMapping
+    @RequestMapping(path = "display")
     public DisplayDTO getDisplay() {
         return DisplayDTO.of(display.getText());
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(path = "barcode", method = RequestMethod.POST)
     public DisplayDTO onBarcode(@RequestBody BarcodeDTO barcodeDTO) {
         pointOfSales.onBarcode(Barcode.of(barcodeDTO.getValue()));
         return getDisplay();
     }
+
+    @RequestMapping(path = "sell", method = RequestMethod.POST)
+    public DisplayDTO onSell() {
+        pointOfSales.sell();
+        return getDisplay();
+    }
+
 }

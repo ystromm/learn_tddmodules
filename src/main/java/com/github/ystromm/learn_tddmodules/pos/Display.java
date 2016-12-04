@@ -22,4 +22,8 @@ public class Display {
     public void setBadBarcodeMessage() {
         text = "Konstig streckkod!";
     }
+
+    public void clear() {
+        text = "";
+    }
 }
