@@ -12,7 +12,7 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 mainClassName = 'com.github.ystromm.learn_tddmodules.Main'
@@ -28,7 +28,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.jmock:jmock-junit4:2.8.2'
-    testCompile 'org.assertj:assertj-core:version:3.6.1'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.6.1'
+
 
 }
 
